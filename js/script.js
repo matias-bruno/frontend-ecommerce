@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loginUser 
   } from './modules/api.js';
 
+  // Importar funciones del módulo de autenticación
+  import { 
+    checkAuthStatus, 
+    login, 
+    logout,
+    setupLoginFormListener
+  } from './modules/auth.js';
+
   // Revisar estado de autenticación al cargar la página
   checkAuthStatus();
 
@@ -266,68 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // AUTHENTICATION FUNCTIONS
-  function checkAuthStatus() {
-    const token = localStorage.getItem('authToken');
-    const user = localStorage.getItem('user');
+  // Configurar event listener del formulario de login
+  setupLoginFormListener();
 
-    if (token && user) {
-      // User is logged in
-      document.getElementById('login-nav-item').style.display = 'none';
-      document.getElementById('logout-nav-item').style.display = 'block';
-    } else {
-      // User is not logged in
-      document.getElementById('login-nav-item').style.display = 'block';
-      document.getElementById('logout-nav-item').style.display = 'none';
-    }
-  }
-
-  window.login = async function (username, password) {
-    try {
-      const authData = await loginUser(username, password);
-
-      // Store token and user info
-      localStorage.setItem('authToken', authData.token);
-      localStorage.setItem('user', JSON.stringify(authData.user));
-
-      // Update UI
-      checkAuthStatus();
-
-      // Close login modal
-      const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-      loginModal.hide();
-
-      // Clear form
-      document.getElementById('loginForm').reset();
-
-      console.log("Login successful:", authData);
-
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      alert("Error al iniciar sesión: " + error.message);
-    }
-  };
-
-  window.logout = function () {
-    // Remove token and user info
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-
-    // Update UI
-    checkAuthStatus();
-
-    console.log("Logout successful");
-  };
-
-
-
-  // Handle login form submission
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    await login(username, password);
-  });
+  // Hacer funciones globales para compatibilidad temporal (hasta que main.js esté activo)
+  window.login = login;
+  window.logout = logout;
 });
