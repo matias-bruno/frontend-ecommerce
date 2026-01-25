@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:8080/api";
+const API_URL = "http://localhost:8080/api";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartUI();
 
   function loadProducts(page, size) {
-    fetch(`${apiUrl}/products?page=${page}&size=${pageSize}`,
+    fetch(`${API_URL}/products?page=${page}&size=${pageSize}`,
       { headers: getAuthHeaders() }
     )
       .then((response) => {
@@ -227,28 +227,53 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // FUNCIONALIDAD PARA REALIZAR COMPRA
-  document.getElementById("realizar-compra").addEventListener("click", () => {
+  document.getElementById("realizar-compra").addEventListener("click", async () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     if (cart.length === 0) {
       alert("Tu carrito está vacío");
       return;
     }
 
-    const total = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    document.getElementById("modal-total").textContent = total.toFixed(2);
+    const orderItems = cart.map(item => ({
+      productId: item.id,
+      quantity: item.quantity
+    }));
 
-    // Mostrar el modal
-    const modal = new bootstrap.Modal(
-      document.getElementById("compraExitosaModal")
-    );
-    modal.show();
+    try {
+      const response = await fetch(`${API_URL}/orders`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ orderItems }),
+      });
 
-    // Limpiar el carrito después de la compra
-    localStorage.clear();
-    updateCartUI();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al crear el pedido");
+      }
+
+      const orderConfirmation = await response.json();
+      console.log("Pedido realizado con éxito:", orderConfirmation);
+
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      document.getElementById("modal-total").textContent = total.toFixed(2);
+
+      // Mostrar el modal
+      const modal = new bootstrap.Modal(
+        document.getElementById("compraExitosaModal")
+      );
+      modal.show();
+
+      // Limpiar el carrito después de la compra
+      localStorage.removeItem("cart");
+      updateCartUI();
+
+    } catch (error) {
+      console.error("Error al realizar la compra:", error);
+      alert("Error al realizar la compra: " + error.message);
+    }
   });
 
   // AUTHENTICATION FUNCTIONS
@@ -269,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.login = async function (username, password) {
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
