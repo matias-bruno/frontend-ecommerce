@@ -1,6 +1,15 @@
-const API_URL = "http://localhost:8080/api";
+
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Importar funciones del módulo API
+  import { 
+    getAuthToken, 
+    getAuthHeaders, 
+    fetchProducts, 
+    createOrder, 
+    loginUser 
+  } from './modules/api.js';
 
   // Revisar estado de autenticación al cargar la página
   checkAuthStatus();
@@ -17,15 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartUI();
 
   function loadProducts(page, size) {
-    fetch(`${API_URL}/products?page=${page}&size=${pageSize}`,
-      { headers: getAuthHeaders() }
-    )
-      .then((response) => {
-        if (!response || !response.ok) {
-          throw new Error("API no disponible");
-        }
-        return response.json();
-      })
+    fetchProducts(page, size || pageSize)
       .then((data) => {
         if (data && data.content) {
           currentPage = data.number;
@@ -240,18 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
 
     try {
-      const response = await fetch(`${API_URL}/orders`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ orderItems }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error al crear el pedido");
-      }
-
-      const orderConfirmation = await response.json();
+      const orderConfirmation = await createOrder(orderItems);
       console.log("Pedido realizado con éxito:", orderConfirmation);
 
       const total = cart.reduce(
@@ -294,20 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.login = async function (username, password) {
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error de autenticación");
-      }
-
-      const authData = await response.json();
+      const authData = await loginUser(username, password);
 
       // Store token and user info
       localStorage.setItem('authToken', authData.token);
@@ -342,24 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Logout successful");
   };
 
-  // Get auth token for API requests
-  function getAuthToken() {
-    return localStorage.getItem('authToken');
-  }
 
-  // Add authorization header to fetch requests
-  function getAuthHeaders() {
-    const token = getAuthToken();
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    return headers;
-  }
 
   // Handle login form submission
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
