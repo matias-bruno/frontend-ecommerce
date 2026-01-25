@@ -2,6 +2,9 @@ const apiUrl = "http://localhost:8080/api";
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Revisar estado de autenticación al cargar la página
+  checkAuthStatus();
+
   // Variables globales para paginación
   let currentPage = 0;
   let totalPages = 0;
@@ -10,11 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cargar primera página de productos
   loadProducts(currentPage);
 
+  // Inicializar carrito
+  updateCartUI();
+
   function loadProducts(page, size) {
-    fetch(`${apiUrl}/products?page=${page}&size=${pageSize}`)
+    fetch(`${apiUrl}/products?page=${page}&size=${pageSize}`,
+      { headers: getAuthHeaders() }
+    )
       .then((response) => {
         if (!response || !response.ok) {
-          throw new Error("API DummyJSON no disponible");
+          throw new Error("API no disponible");
         }
         return response.json();
       })
@@ -25,11 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
           renderProducts(data.content);
           updatePagination(data);
         } else {
-          throw new Error("Formato inesperado de DummyJSON");
+          throw new Error("Formato inesperado de la API");
         }
       })
       .catch((error) =>
-        console.error("Error al obtener productos de DummyJSON", error)
+        console.error("Error al obtener productos", error)
       );
   }
 
@@ -64,40 +72,40 @@ document.addEventListener("DOMContentLoaded", () => {
   function updatePagination(pageData) {
     const paginationContainer = document.getElementById("pagination-container");
     const paginationList = paginationContainer.querySelector("ul");
-    
+
     // Limpiar números de página existentes (mantener prev/next)
     const pageItems = paginationList.querySelectorAll(".page-item:not(#prev-page):not(#next-page)");
     pageItems.forEach(item => item.remove());
-    
+
     if (pageData.totalPages > 1) {
       paginationContainer.style.display = "block";
-      
+
       // Actualizar botones anterior/siguiente
       const prevButton = document.getElementById("prev-page");
       const nextButton = document.getElementById("next-page");
-      
+
       prevButton.classList.toggle("disabled", pageData.first);
       nextButton.classList.toggle("disabled", pageData.last);
-      
+
       // Generar números de página
       const maxVisiblePages = 5;
       let startPage = Math.max(0, pageData.number - Math.floor(maxVisiblePages / 2));
       let endPage = Math.min(pageData.totalPages - 1, startPage + maxVisiblePages - 1);
-      
+
       if (endPage - startPage < maxVisiblePages - 1) {
         startPage = Math.max(0, endPage - maxVisiblePages + 1);
       }
-      
+
       // Insertar números de página antes del botón siguiente
       for (let i = startPage; i <= endPage; i++) {
         const li = document.createElement("li");
         li.className = `page-item ${i === pageData.number ? "active" : ""}`;
         li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
-        
+
         // Insertar antes del botón siguiente
         paginationList.insertBefore(li, nextButton);
       }
-      
+
       // Agregar event listeners
       paginationList.querySelectorAll(".page-link[data-page]").forEach(link => {
         link.addEventListener("click", (e) => {
@@ -106,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadProducts(page);
         });
       });
-      
+
       // Event listeners para anterior/siguiente
       prevButton.querySelector(".page-link").onclick = (e) => {
         e.preventDefault();
@@ -114,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadProducts(pageData.number - 1);
         }
       };
-      
+
       nextButton.querySelector(".page-link").onclick = (e) => {
         e.preventDefault();
         if (!pageData.last) {
@@ -243,5 +251,98 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartUI();
   });
 
-  updateCartUI();
+  // AUTHENTICATION FUNCTIONS
+  function checkAuthStatus() {
+    const token = localStorage.getItem('authToken');
+    const user = localStorage.getItem('user');
+
+    if (token && user) {
+      // User is logged in
+      document.getElementById('login-nav-item').style.display = 'none';
+      document.getElementById('logout-nav-item').style.display = 'block';
+    } else {
+      // User is not logged in
+      document.getElementById('login-nav-item').style.display = 'block';
+      document.getElementById('logout-nav-item').style.display = 'none';
+    }
+  }
+
+  window.login = async function (username, password) {
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error de autenticación");
+      }
+
+      const authData = await response.json();
+
+      // Store token and user info
+      localStorage.setItem('authToken', authData.token);
+      localStorage.setItem('user', JSON.stringify(authData.user));
+
+      // Update UI
+      checkAuthStatus();
+
+      // Close login modal
+      const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+      loginModal.hide();
+
+      // Clear form
+      document.getElementById('loginForm').reset();
+
+      console.log("Login successful:", authData);
+
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Error al iniciar sesión: " + error.message);
+    }
+  };
+
+  window.logout = function () {
+    // Remove token and user info
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+
+    // Update UI
+    checkAuthStatus();
+
+    console.log("Logout successful");
+  };
+
+  // Get auth token for API requests
+  function getAuthToken() {
+    return localStorage.getItem('authToken');
+  }
+
+  // Add authorization header to fetch requests
+  function getAuthHeaders() {
+    const token = getAuthToken();
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return headers;
+  }
+
+  // Handle login form submission
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    await login(username, password);
+  });
 });

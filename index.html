@@ -25,6 +25,12 @@
             Carrito (<span id="cart-counter-nav">0</span>)
           </a>
         </li>
+        <li class="itemMenu" id="login-nav-item">
+          <a href="#login" class="text-dark" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Sesión</a>
+        </li>
+        <li class="itemMenu" id="logout-nav-item" style="display: none;">
+          <a href="#logout" class="text-dark" onclick="logout()">Cerrar Sesión</a>
+        </li>
         <li class="itemMenu">
           <a href="#redes-sociales" class="text-dark">Redes Sociales</a>
         </li>
@@ -143,6 +149,33 @@
 
   <!-- Overlay para móviles -->
   <div id="cart-overlay" class="cart-overlay"></div>
+
+  <!-- Modal de Login -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="username" class="form-label">Usuario</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal de Compra Exitosa -->
   <div class="modal fade" id="compraExitosaModal" tabindex="-1" aria-labelledby="compraExitosaModalLabel"
