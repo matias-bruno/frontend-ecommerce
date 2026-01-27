@@ -42,9 +42,7 @@ export function getAuthHeaders() {
  */
 export async function fetchProducts(page = 0, size = 20) {
   try {
-    const response = await fetch(`${API_URL}/products?page=${page}&size=${size}`, {
-      headers: getAuthHeaders()
-    });
+    const response = await fetch(`${API_URL}/products?page=${page}&size=${size}`);
 
     if (!response || !response.ok) {
       throw new Error("API no disponible");
