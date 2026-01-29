@@ -108,6 +108,7 @@ export function updateCartUI() {
 
   document.getElementById("carrito-total").textContent = total.toFixed(2);
   document.getElementById("cart-counter").textContent = CartService.getItemCount(cart);
+  document.getElementById("cart-counter-nav").textContent = CartService.getItemCount(cart);
 }
 
 /**
