@@ -15,11 +15,11 @@ export function checkAuthStatus() {
   if (token && user) {
     // User is logged in
     document.getElementById('login-nav-item').style.display = 'none';
-    document.getElementById('logout-nav-item').style.display = 'block';
+    document.getElementById('profile-nav-item').style.display = 'block';
   } else {
     // User is not logged in
     document.getElementById('login-nav-item').style.display = 'block';
-    document.getElementById('logout-nav-item').style.display = 'none';
+    document.getElementById('profile-nav-item').style.display = 'none';
   }
 }
 

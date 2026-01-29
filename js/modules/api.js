@@ -35,14 +35,21 @@ export function getAuthHeaders() {
 }
 
 /**
- * Fetch de productos con paginación
+ * Fetch de productos con paginación y búsqueda opcional
  * @param {number} page - Número de página
  * @param {number} size - Tamaño de página
+ * @param {string} search - Término de búsqueda opcional
  * @returns {Promise<Object>} Datos de productos paginados
  */
-export async function fetchProducts(page = 0, size = 20) {
+export async function fetchProducts(page = 0, size = 20, search = null) {
   try {
-    const response = await fetch(`${API_URL}/products?page=${page}&size=${size}`);
+    let url = `${API_URL}/products?page=${page}&size=${size}`;
+    
+    if (search) {
+      url += `&name=${encodeURIComponent(search)}`;
+    }
+    
+    const response = await fetch(url);
 
     if (!response || !response.ok) {
       throw new Error("API no disponible");
