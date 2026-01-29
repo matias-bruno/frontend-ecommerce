@@ -91,16 +91,29 @@ export function showNotification(message, type = 'info') {
 export function toggleCart() {
   const cartSidebar = document.getElementById('cart-sidebar');
   const cartOverlay = document.getElementById('cart-overlay');
+  const mainContent = document.querySelector('.main-content');
   const isHidden = cartSidebar.classList.contains('hidden');
+  const isMobile = window.innerWidth <= 768;
   
   if (isHidden) {
     cartSidebar.classList.remove('hidden');
     cartSidebar.classList.add('active');
-    cartOverlay.classList.add('active');
+    
+    if (isMobile) {
+      cartOverlay.classList.add('active');
+    } else {
+      if (mainContent) {
+        mainContent.style.marginRight = '350px';
+      }
+    }
   } else {
     cartSidebar.classList.add('hidden');
     cartSidebar.classList.remove('active');
     cartOverlay.classList.remove('active');
+    
+    if (!isMobile && mainContent) {
+      mainContent.style.marginRight = '0';
+    }
   }
 }
 
@@ -110,9 +123,16 @@ export function toggleCart() {
 export function closeCart() {
   const cartSidebar = document.getElementById('cart-sidebar');
   const cartOverlay = document.getElementById('cart-overlay');
+  const mainContent = document.querySelector('.main-content');
+  const isMobile = window.innerWidth <= 768;
+  
   cartSidebar.classList.add('hidden');
   cartSidebar.classList.remove('active');
   cartOverlay.classList.remove('active');
+  
+  if (!isMobile && mainContent) {
+    mainContent.style.marginRight = '0';
+  }
 }
 
 /**
@@ -156,22 +176,50 @@ export function setupEventDelegation() {
   // Detectar el tamaño de pantalla para ajustar el comportamiento del carrito
   function adjustCartForScreenSize() {
     const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const mainContent = document.querySelector('.main-content');
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-      // En móvil, el carrito está oculto por defecto
-      if (!cartSidebar.classList.contains('hidden') && !cartSidebar.classList.contains('active')) {
-        cartSidebar.classList.add('hidden');
-      }
+      // En móvil, el carrito debe estar oculto por defecto
+      cartSidebar.classList.add('hidden');
+      cartSidebar.classList.remove('active');
+      cartOverlay.classList.remove('active');
     } else {
-      // En desktop, el carrito siempre está visible
-      cartSidebar.classList.remove('hidden', 'active');
-      document.getElementById('cart-overlay').classList.remove('active');
+      // En desktop, el overlay nunca debe estar activo
+      cartOverlay.classList.remove('active');
+      
+      // Si el carrito estaba activo (abierto por el usuario), mantenerlo visible
+      if (cartSidebar.classList.contains('active')) {
+        cartSidebar.classList.remove('hidden');
+        if (mainContent) {
+          mainContent.style.marginRight = '350px';
+        }
+      } else {
+        // Si estaba oculto por el usuario, mantenerlo oculto pero restaurar el contenido principal
+        cartSidebar.classList.add('hidden');
+        if (mainContent) {
+          mainContent.style.marginRight = '0';
+        }
+      }
     }
   }
 
   // Ajustar al cargar y al redimensionar
-  adjustCartForScreenSize();
+  // Usar un pequeño timeout para asegurar que el DOM esté completamente cargado
+  setTimeout(() => {
+    adjustCartForScreenSize();
+    // En desktop, mostrar el carrito por defecto una vez
+    if (window.innerWidth > 768) {
+      const cartSidebar = document.getElementById('cart-sidebar');
+      const mainContent = document.querySelector('.main-content');
+      cartSidebar.classList.remove('hidden');
+      cartSidebar.classList.remove('active');
+      if (mainContent) {
+        mainContent.style.marginRight = '350px';
+      }
+    }
+  }, 100);
   window.addEventListener('resize', adjustCartForScreenSize);
 }
 
