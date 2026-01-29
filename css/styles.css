@@ -161,10 +161,41 @@ body {
   .cart-sidebar {
     width: 100%;
     max-width: 400px;
+    transform: translateX(100%);
+  }
+
+  .cart-sidebar.active {
+    transform: translateX(0);
   }
 
   .cart-sidebar.hidden {
     transform: translateX(100%);
+  }
+
+  /* Navegación móvil */
+  header {
+    flex-wrap: wrap;
+  }
+
+  .menu {
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .itemMenu {
+    font-size: 0.9rem;
+  }
+
+  /* Ajustes para productos en móvil */
+  .card {
+    flex: 1 1 150px;
+    max-width: 280px;
+  }
+
+  #productos-container {
+    gap: 15px;
   }
 }
 

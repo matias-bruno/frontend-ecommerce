@@ -86,6 +86,36 @@ export function showNotification(message, type = 'info') {
 }
 
 /**
+ * Toggle del carrito sidebar
+ */
+export function toggleCart() {
+  const cartSidebar = document.getElementById('cart-sidebar');
+  const cartOverlay = document.getElementById('cart-overlay');
+  const isHidden = cartSidebar.classList.contains('hidden');
+  
+  if (isHidden) {
+    cartSidebar.classList.remove('hidden');
+    cartSidebar.classList.add('active');
+    cartOverlay.classList.add('active');
+  } else {
+    cartSidebar.classList.add('hidden');
+    cartSidebar.classList.remove('active');
+    cartOverlay.classList.remove('active');
+  }
+}
+
+/**
+ * Cerrar el carrito
+ */
+export function closeCart() {
+  const cartSidebar = document.getElementById('cart-sidebar');
+  const cartOverlay = document.getElementById('cart-overlay');
+  cartSidebar.classList.add('hidden');
+  cartSidebar.classList.remove('active');
+  cartOverlay.classList.remove('active');
+}
+
+/**
  * Configurar event delegation para acciones dinámicas
  */
 export function setupEventDelegation() {
@@ -107,12 +137,50 @@ export function setupEventDelegation() {
         break;
     }
   });
+
+  // Event listeners para el carrito
+  document.getElementById('open-cart').addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleCart();
+  });
+
+  // Cerrar carrito con el botón X (solo visible en móvil)
+  const closeCartBtn = document.getElementById('close-cart');
+  if (closeCartBtn) {
+    closeCartBtn.addEventListener('click', closeCart);
+  }
+
+  // Cerrar carrito haciendo click en el overlay
+  document.getElementById('cart-overlay').addEventListener('click', closeCart);
+
+  // Detectar el tamaño de pantalla para ajustar el comportamiento del carrito
+  function adjustCartForScreenSize() {
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+      // En móvil, el carrito está oculto por defecto
+      if (!cartSidebar.classList.contains('hidden') && !cartSidebar.classList.contains('active')) {
+        cartSidebar.classList.add('hidden');
+      }
+    } else {
+      // En desktop, el carrito siempre está visible
+      cartSidebar.classList.remove('hidden', 'active');
+      document.getElementById('cart-overlay').classList.remove('active');
+    }
+  }
+
+  // Ajustar al cargar y al redimensionar
+  adjustCartForScreenSize();
+  window.addEventListener('resize', adjustCartForScreenSize);
 }
 
 export default {
   createProductCard,
   createCartItem,
   toggleDescription,
+  toggleCart,
+  closeCart,
   showNotification,
   setupEventDelegation
 };

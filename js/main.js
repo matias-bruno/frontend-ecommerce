@@ -7,7 +7,7 @@
 import { checkAuthStatus, login, logout, setupLoginFormListener } from './modules/auth.js';
 import { addToCart, removeFromCart, updateCartUI, clearCart, setupCartEventListeners } from './modules/cart.js';
 import { loadProducts } from './modules/products.js';
-import { toggleDescription, setupEventDelegation } from './modules/ui.js';
+import { toggleDescription, toggleCart, closeCart, setupEventDelegation } from './modules/ui.js';
 
 /**
  * Estado global de la aplicación
@@ -80,6 +80,8 @@ function setupGlobalFunctions() {
   
   // UI
   window.toggleDescription = toggleDescription;
+  window.toggleCart = toggleCart;
+  window.closeCart = closeCart;
   
   // Utilidades adicionales
   window.updateCartUI = updateCartUI;
@@ -171,7 +173,9 @@ export {
   removeFromCart,
   updateCartUI,
   loadProducts,
-  toggleDescription
+  toggleDescription,
+  toggleCart,
+  closeCart
 };
 
 console.log('🎯 Main.js orquestador cargado');
