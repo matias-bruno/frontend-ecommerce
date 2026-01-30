@@ -181,10 +181,13 @@ export function setupEventDelegation() {
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-      // En móvil, el carrito debe estar oculto por defecto
+      // En móvil, el carrito siempre debe estar oculto y sin margen
       cartSidebar.classList.add('hidden');
       cartSidebar.classList.remove('active');
       cartOverlay.classList.remove('active');
+      if (mainContent) {
+        mainContent.style.marginRight = '0';
+      }
     } else {
       // En desktop, el overlay nunca debe estar activo
       cartOverlay.classList.remove('active');
