@@ -96,6 +96,7 @@ export function updatePagination(pageData) {
 
   if (pageData.totalPages > 1) {
     paginationContainer.style.display = "block";
+    paginationContainer.style.visibility = "visible";
 
     // Actualizar botones anterior/siguiente
     const prevButton = document.getElementById("prev-page");
@@ -157,6 +158,7 @@ export function updatePagination(pageData) {
     };
   } else {
     paginationContainer.style.display = "none";
+    paginationContainer.style.visibility = "hidden";
   }
 }
 
