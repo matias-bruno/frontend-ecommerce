@@ -32,10 +32,11 @@ function setPaginationState(state) {
  * Cargar productos desde la API
  * @param {number} page - Número de página a cargar
  * @param {number} size - Tamaño de página (opcional)
+ * @param {string} search - Término de búsqueda opcional
  * @returns {Promise<Object>} Datos de productos paginados
  */
-export function loadProducts(page, size) {
-  return fetchProducts(page, size || paginationState.pageSize)
+export function loadProducts(page, size, search = null) {
+  return fetchProducts(page, size || paginationState.pageSize, search)
     .then((data) => {
       if (data && data.content) {
         setPaginationState({
@@ -127,7 +128,10 @@ export function updatePagination(pageData) {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const page = parseInt(e.target.dataset.page);
-        loadProducts(page);
+        // Mantener el término de búsqueda actual al cambiar de página
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput ? searchInput.value : null;
+        loadProducts(page, paginationState.pageSize, searchTerm);
       });
     });
 
@@ -135,14 +139,20 @@ export function updatePagination(pageData) {
     prevButton.querySelector(".page-link").onclick = (e) => {
       e.preventDefault();
       if (!pageData.first) {
-        loadProducts(pageData.number - 1);
+        // Mantener el término de búsqueda actual al cambiar de página
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput ? searchInput.value : null;
+        loadProducts(pageData.number - 1, paginationState.pageSize, searchTerm);
       }
     };
 
     nextButton.querySelector(".page-link").onclick = (e) => {
       e.preventDefault();
       if (!pageData.last) {
-        loadProducts(pageData.number + 1);
+        // Mantener el término de búsqueda actual al cambiar de página
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput ? searchInput.value : null;
+        loadProducts(pageData.number + 1, paginationState.pageSize, searchTerm);
       }
     };
   } else {

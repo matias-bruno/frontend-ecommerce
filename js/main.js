@@ -143,26 +143,9 @@ function setupSearchListener() {
       const formData = new FormData(searchForm);
       const searchTerm = formData.get('name');
       
-      // Actualizar URL con parámetro de búsqueda
-      const url = new URL(window.location);
-      if (searchTerm) {
-        url.searchParams.set('name', searchTerm);
-      } else {
-        url.searchParams.delete('name');
-      }
-      window.history.pushState({}, '', url);
-      
-      // Cargar productos con búsqueda
+      // Cargar productos con búsqueda (solo en la API)
       loadProducts(0, 20, searchTerm);
     });
-  }
-  
-  // Manejar parámetros de búsqueda en la carga inicial
-  const urlParams = new URLSearchParams(window.location.search);
-  const searchParam = urlParams.get('name');
-  if (searchParam) {
-    document.getElementById('searchInput').value = searchParam;
-    loadProducts(0, 20, searchParam);
   }
 }
 
