@@ -45,6 +45,13 @@ export function loadProducts(page, size, search = null) {
         });
         renderProducts(data.content);
         updatePagination(data);
+        
+        // Desplazar suavemente al inicio de la lista de productos
+        const productosContainer = document.getElementById("productos-container");
+        if (productosContainer) {
+          // Necesita que el elemento html tenga la propiedad scroll-padding-top en CSS seteada a un valor adecuado
+          productosContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } else {
         throw new Error("Formato inesperado de la API");
       }

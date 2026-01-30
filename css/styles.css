@@ -1,3 +1,7 @@
+html {
+  scroll-padding-top: 400px; /* asegurarse de que suba hasta arriba */
+}
+
 body {
   font-family: "Roboto", sans-serif;
   padding-top: 10px;
