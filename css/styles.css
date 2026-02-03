@@ -1,5 +1,6 @@
 html {
-  scroll-padding-top: 400px; /* asegurarse de que suba hasta arriba */
+  scroll-padding-top: 400px;
+  /* asegurarse de que suba hasta arriba */
 }
 
 body {
@@ -139,6 +140,41 @@ body {
 
 .cart-actions .btn {
   flex: 1;
+}
+
+.cart-content .btn,
+.cart-content .btn-danger,
+.cart-content .btn-success {
+  color: #555555;
+  background-color: #e0e0e0;
+  border-color: #aaaaaa;
+}
+
+.cart-content .btn:hover,
+.cart-content .btn-danger:hover,
+.cart-content .btn-success:hover {
+  background-color: #d3d3d3;
+  color: #000000;
+}
+
+.card .btn,
+.card .btn-link,
+.card .btn-primary {
+  color: #555555;
+  background-color: #e0e0e0;
+  border-color: #aaaaaa;
+}
+
+.card .btn:hover,
+.card .btn-link:hover,
+.card .btn-primary:hover {
+  background-color: #d3d3d3;
+  color: #000000;
+}
+
+.card .btn-link {
+  padding: 5px;
+  text-decoration: none;
 }
 
 /* OVERLAY PARA MÓVILES */
