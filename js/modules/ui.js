@@ -53,8 +53,11 @@ export function createCartItem(item) {
  * @param {HTMLElement} button - Botón que activa el toggle
  */
 export function toggleDescription(button) {
-  const shortDescription = button.previousElementSibling;
-  const fullDescription = shortDescription.nextElementSibling;
+  const cardBody = button.parentElement;
+  const shortDescription = cardBody.querySelector('.short-description');
+  const fullDescription = cardBody.querySelector('.full-description');
+  
+  if (!shortDescription || !fullDescription) return;
   
   if (fullDescription.style.display === "none") {
     fullDescription.style.display = "block";
