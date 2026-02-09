@@ -6,17 +6,52 @@
 import { loginUser } from './api.js';
 
 /**
+ * Verificar si el token JWT ha expirado
+ * @param {string} token - Token JWT a verificar
+ * @returns {boolean} true si el token es válido, false si ha expirado o es inválido
+ */
+function isTokenValid(token) {
+  if (!token) return false;
+  
+  try {
+    // Decodificar el payload del token JWT (sin verificar la firma)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Date.now() / 1000;
+    
+    // Verificar si el token ha expirado
+    return payload.exp > currentTime;
+  } catch (error) {
+    console.error('Error al decodificar token:', error);
+    return false;
+  }
+}
+
+/**
+ * Limpiar datos de autenticación expirados
+ */
+function clearExpiredAuth() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  console.log('Token expirado, sesión cerrada automáticamente');
+}
+
+/**
  * Revisar estado de autenticación y actualizar UI
  */
 export function checkAuthStatus() {
   const token = localStorage.getItem('authToken');
   const user = localStorage.getItem('user');
 
-  if (token && user) {
-    // User is logged in
+  if (token && user && isTokenValid(token)) {
+    // User is logged in with valid token
     document.getElementById('login-nav-item').style.display = 'none';
     document.getElementById('profile-nav-item').style.display = 'block';
   } else {
+    // Token doesn't exist, user doesn't exist, or token has expired
+    if (token && !isTokenValid(token)) {
+      clearExpiredAuth();
+    }
+    
     // User is not logged in
     document.getElementById('login-nav-item').style.display = 'block';
     document.getElementById('profile-nav-item').style.display = 'none';

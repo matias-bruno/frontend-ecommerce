@@ -74,6 +74,7 @@ function setupGlobalFunctions() {
   // Autenticación
   window.login = login;
   window.logout = logout;
+  window.checkAuthStatus = checkAuthStatus;
   
   // Carrito
   window.addToCart = addToCart;
