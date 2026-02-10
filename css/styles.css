@@ -338,3 +338,32 @@ footer .bg-dark {
   background-color: #343a40 !important;
   padding: 10px 0;
 }
+
+/* Estilos para el select de categorías en navbar */
+#categorySelect {
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #495057;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.95rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#categorySelect:hover {
+  border-color: #adb5bd;
+}
+
+#categorySelect:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* Responsive para dispositivos móviles */
+@media (max-width: 768px) {
+  #categorySelect {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}

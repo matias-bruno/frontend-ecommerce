@@ -39,9 +39,10 @@ export function getAuthHeaders() {
  * @param {number} page - Número de página
  * @param {number} size - Tamaño de página
  * @param {string} search - Término de búsqueda opcional
+ * @param {string} categorySlug - Slug de categoría opcional
  * @returns {Promise<Object>} Datos de productos paginados
  */
-export async function fetchProducts(page = 0, size = 20, search = null) {
+export async function fetchProducts(page = 0, size = 20, search = null, categorySlug = null) {
   try {
     let url = `${API_URL}/products?page=${page}&size=${size}`;
     
@@ -49,13 +50,23 @@ export async function fetchProducts(page = 0, size = 20, search = null) {
       url += `&name=${encodeURIComponent(search)}`;
     }
     
+    if (categorySlug) {
+      url += `&category=${encodeURIComponent(categorySlug)}`;
+    }
+    
+    console.log('📡 Llamada a API:');
+    console.log('  - URL completa:', url);
+    console.log('  - Parámetros:', { page, size, search, categorySlug });
+    
     const response = await fetch(url);
 
     if (!response || !response.ok) {
       throw new Error("API no disponible");
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('✅ Respuesta de API:', data);
+    return data;
   } catch (error) {
     console.error("Error al obtener productos:", error);
     throw error;
@@ -115,11 +126,31 @@ export async function loginUser(username, password) {
   }
 }
 
+/**
+ * Fetch de categorías disponibles
+ * @returns {Promise<Array>} Array de categorías con su slug
+ */
+export async function fetchCategories() {
+  try {
+    const response = await fetch(`${API_URL}/categories`);
+
+    if (!response || !response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("❌ Error al obtener categorías:", error);
+    throw error;
+  }
+}
+
 export default {
   API_URL,
   getAuthToken,
   getAuthHeaders,
   fetchProducts,
+  fetchCategories,
   createOrder,
   loginUser
 };

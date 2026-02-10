@@ -33,10 +33,11 @@ function setPaginationState(state) {
  * @param {number} page - Número de página a cargar
  * @param {number} size - Tamaño de página (opcional)
  * @param {string} search - Término de búsqueda opcional
+ * @param {string} categorySlug - Slug de categoría opcional
  * @returns {Promise<Object>} Datos de productos paginados
  */
-export function loadProducts(page, size, search = null) {
-  return fetchProducts(page, size || paginationState.pageSize, search)
+export function loadProducts(page, size, search = null, categorySlug = null) {
+  return fetchProducts(page, size || paginationState.pageSize, search, categorySlug)
     .then((data) => {
       if (data && data.content) {
         setPaginationState({
@@ -136,10 +137,12 @@ export function updatePagination(pageData) {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const page = parseInt(e.target.dataset.page);
-        // Mantener el término de búsqueda actual al cambiar de página
+        // Mantener el término de búsqueda y categoría actual al cambiar de página
         const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
         const searchTerm = searchInput ? searchInput.value : null;
-        loadProducts(page, paginationState.pageSize, searchTerm);
+        const categorySlug = categorySelect ? categorySelect.value : null;
+        loadProducts(page, paginationState.pageSize, searchTerm, categorySlug);
       });
     });
 
@@ -147,20 +150,24 @@ export function updatePagination(pageData) {
     prevButton.querySelector(".page-link").onclick = (e) => {
       e.preventDefault();
       if (!pageData.first) {
-        // Mantener el término de búsqueda actual al cambiar de página
+        // Mantener el término de búsqueda y categoría actual al cambiar de página
         const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
         const searchTerm = searchInput ? searchInput.value : null;
-        loadProducts(pageData.number - 1, paginationState.pageSize, searchTerm);
+        const categorySlug = categorySelect ? categorySelect.value : null;
+        loadProducts(pageData.number - 1, paginationState.pageSize, searchTerm, categorySlug);
       }
     };
 
     nextButton.querySelector(".page-link").onclick = (e) => {
       e.preventDefault();
       if (!pageData.last) {
-        // Mantener el término de búsqueda actual al cambiar de página
+        // Mantener el término de búsqueda y categoría actual al cambiar de página
         const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
         const searchTerm = searchInput ? searchInput.value : null;
-        loadProducts(pageData.number + 1, paginationState.pageSize, searchTerm);
+        const categorySlug = categorySelect ? categorySelect.value : null;
+        loadProducts(pageData.number + 1, paginationState.pageSize, searchTerm, categorySlug);
       }
     };
   } else {

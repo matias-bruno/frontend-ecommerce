@@ -8,6 +8,7 @@ import { checkAuthStatus, login, logout, setupLoginFormListener } from './module
 import { addToCart, removeFromCart, updateCartUI, clearCart, setupCartEventListeners } from './modules/cart.js';
 import { loadProducts } from './modules/products.js';
 import { toggleDescription, toggleCart, closeCart, setupEventDelegation } from './modules/ui.js';
+import { fetchCategories } from './modules/api.js';
 
 /**
  * Estado global de la aplicación
@@ -138,15 +139,65 @@ function setupGlobalErrorHandling() {
  */
 function setupSearchListener() {
   const searchForm = document.getElementById('searchForm');
+  const categorySelect = document.getElementById('categorySelect');
+
+  // Cargar categorías desde el API
+  loadCategoriesFromAPI();
+
+  // Listener para el formulario de búsqueda
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(searchForm);
       const searchTerm = formData.get('name');
+      const selectedCategory = categorySelect ? categorySelect.value : null;
       
-      // Cargar productos con búsqueda (solo en la API)
-      loadProducts(0, 20, searchTerm);
+      // Cargar productos con búsqueda y categoría (página 0)
+      loadProducts(0, 20, searchTerm, selectedCategory);
     });
+  }
+
+  // Listener para el select de categorías
+  if (categorySelect) {
+    categorySelect.addEventListener('change', () => {
+      const searchInput = document.getElementById('searchInput');
+      const searchTerm = searchInput ? searchInput.value : null;
+      const selectedCategory = categorySelect.value;
+      
+      // Cargar productos con la categoría seleccionada (página 0)
+      loadProducts(0, 20, searchTerm, selectedCategory);
+    });
+  }
+}
+
+/**
+ * Cargar categorías desde el API y populizar el select
+ */
+async function loadCategoriesFromAPI() {
+  try {
+    const categorySelect = document.getElementById('categorySelect');
+    
+    if (!categorySelect) {
+      console.error('❌ El select #categorySelect no existe en el DOM');
+      return;
+    }
+
+    const categories = await fetchCategories();
+    
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+      console.warn('⚠️ No se pudieron cargar categorías');
+      return;
+    }
+
+    // Agregar categorías al select
+    categories.forEach((category) => {
+      const option = document.createElement('option');
+      option.value = category.slug;
+      option.textContent = category.name || category.slug;
+      categorySelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('❌ Error al cargar categorías:', error);
   }
 }
 
