@@ -14,6 +14,11 @@ body {
   transition: margin-right 0.3s ease;
 }
 
+/* NAVBAR - aumentar z-index en desktop para que dropdown esté sobre el carrito */
+.navbar.fixed-top {
+  z-index: 1051;
+}
+
 
 /* CARRITO SIDEBAR */
 .cart-sidebar {
@@ -177,6 +182,11 @@ body {
   text-decoration: none;
 }
 
+/* DROPDOWN - z-index para desktop (mayor que carrito) */
+.navbar .dropdown-menu {
+  z-index: 1052 !important;
+}
+
 /* OVERLAY PARA MÓVILES */
 .cart-overlay {
   position: fixed;
@@ -193,8 +203,18 @@ body {
   display: block;
 }
 
+/* DROPDOWN - z-index para desktop (mayor que carrito) */
+.navbar .dropdown-menu {
+  z-index: 1051 !important;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  /* En móvil, reducir el z-index del navbar para que carrito esté sobre el dropdown */
+  .navbar.fixed-top {
+    z-index: 1030;
+  }
+
   .main-content {
     margin-right: 0;
   }
