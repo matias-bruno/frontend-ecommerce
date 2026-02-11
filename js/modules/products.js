@@ -180,7 +180,7 @@ export function updatePagination(pageData) {
  * Configurar tamaño de página por defecto
  * @param {number} size - Nuevo tamaño de página
  */
-export function setPageSize(size) {
+function setPageSize(size) {
   setPaginationState({ pageSize: size });
 }
 
@@ -188,6 +188,5 @@ export default {
   getPaginationState,
   loadProducts,
   renderProducts,
-  updatePagination,
-  setPageSize
+  updatePagination
 };

@@ -202,16 +202,6 @@ async function loadCategoriesFromAPI() {
 }
 
 /**
- * Configurar service worker para PWA (opcional, para futuro)
- */
-function setupServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    // Aquí podríamos registrar un service worker en el futuro
-    console.log('Service Worker soportado pero no configurado');
-  }
-}
-
-/**
  * Entry point principal de la aplicación
  */
 document.addEventListener("DOMContentLoaded", () => {
@@ -222,30 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Inicializar aplicación
   initializeApp();
-  
-  // Configurar service worker (opcional)
-  setupServiceWorker();
 });
 
 // Exportar utilidades para debugging
 export {
   AppState,
-  initializeApp,
-  setupGlobalFunctions
-};
-
-// Exportar funciones principales para acceso programático
-export {
-  checkAuthStatus,
-  login,
-  logout,
-  addToCart,
-  removeFromCart,
-  updateCartUI,
-  loadProducts,
-  toggleDescription,
-  toggleCart,
-  closeCart
+  initializeApp
 };
 
 console.log('🎯 Main.js orquestador cargado');

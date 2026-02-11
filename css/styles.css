@@ -1,6 +1,6 @@
 html {
-  scroll-padding-top: 400px;
-  /* asegurarse de que suba hasta arriba */
+  scroll-padding-top: 120px;
+  /* Ajuste para compensar navbar fijo */
 }
 
 body {
@@ -213,22 +213,6 @@ body {
     transform: translateX(100%);
   }
 
-  /* Navegación móvil */
-  header {
-    flex-wrap: wrap;
-  }
-
-  .menu {
-    width: 100%;
-    justify-content: center;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .itemMenu {
-    font-size: 0.9rem;
-  }
-
   /* Ajustes para productos en móvil */
   .card {
     flex: 1 1 150px;
@@ -242,6 +226,8 @@ body {
 
 .card {
   margin: 10px;
+  flex: 1 1 200px;
+  max-width: 300px;
 }
 
 .card img {
@@ -256,15 +242,6 @@ body {
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 20px;
-}
-
-.card {
-  flex: 1 1 200px;
-  max-width: 300px;
-}
-
-#reseñas .card {
-  margin-bottom: 20px;
 }
 
 /* ESTILOS ORIGINALES MANTENIDOS */
@@ -287,20 +264,6 @@ body {
   .cart-actions .btn {
     width: 100%;
   }
-
-  .cart-actions {
-    flex-direction: column;
-  }
-
-  .cart-actions .btn {
-    width: 100%;
-  }
-}
-
-/* Estilo para botón de agregar al carrito */
-.btn-added {
-  background-color: #28a745;
-  color: white;
 }
 
 /* Ajustes para el botón de descripción */
