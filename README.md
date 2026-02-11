@@ -78,7 +78,6 @@ El proyecto sigue un patrón de **módulos ES6+** donde cada funcionalidad está
 - **Async/Await**: Manejo asíncrono de operaciones
 - **Event Delegation**: Optimización de listeners de eventos
 - **Error Handling**: Captura y manejo de errores global
-- **Service Worker Ready**: Preparado para PWA (futuro)
 
 ## 🤝 Contribución
 
