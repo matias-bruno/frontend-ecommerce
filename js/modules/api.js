@@ -132,7 +132,7 @@ export async function loginUser(username, password) {
  */
 export async function fetchCategories() {
   try {
-    const response = await fetch(`${API_URL}/categories`);
+    const response = await fetch(`${API_URL}/products/categories`);
 
     if (!response || !response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
